@@ -1,0 +1,191 @@
+<!-- amchatroom.hp.af.cm -->
+<!doctype html>
+<html>
+	<head>
+		<title>Chat Room</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link type="text/css" rel="stylesheet" href="client.css" />
+		<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="_socket.io.js"></script>
+		<script type="text/javascript">
+
+			var socket = io.connect('http://localhost:8080');
+			var username = '';
+					
+			function add_message(user_name, user_color, user_msg) {
+				var name = document.createElement('span');
+				name.setAttribute('class', 'person');
+				name.style.color = user_color;
+				name.appendChild(document.createTextNode(user_name + ' said:'));
+				
+				var text = document.createElement('span');
+				text.setAttribute('class', 'text');
+				text.appendChild(document.createTextNode(user_msg));
+
+				var message = document.createElement('div');
+				message.setAttribute('class', 'message');
+				message.appendChild(name);
+				message.appendChild(text);
+
+				var item = document.createElement('li');
+				item.appendChild(message);
+
+				$('#messages ul').append(item);
+			}
+
+			function add_name(name) {
+				$('#top marquee').append(', ' + name)
+			}
+
+			function add_notification(text_msg) {
+				var text = document.createElement('span');
+				text.setAttribute('class', 'text');
+				text.appendChild(document.createTextNode(text_msg));
+
+				var notification = document.createElement('div');
+				notification.setAttribute('class', 'notification');
+				notification.appendChild(text);
+
+				var item = document.createElement('li');
+				item.appendChild(notification);
+
+				$('#messages ul').append(item);
+			}
+
+			function auto_scroll() {
+				$('#messages ul').stop().animate({ scrollTop : $('#messages ul')[0].scrollHeight }, 800);
+				notification_sound();
+			}
+
+			function display_members(names) {
+				var people = 'You (' + username + ')';
+				for (name in names) {
+					if (names[name] != username)
+						people += ', ' + names[name];
+				}
+
+				$('#top span').eq(1).html(people);
+				$('#top span').eq(1).attr('title', people);
+			}
+
+			function display_messages(messages) {
+				for (message in messages)
+					add_message(messages[message].username, messages[message].color, messages[message].msg);
+			}
+
+			function display_notifications(notifications) {
+				for (notification in notifications)
+					add_notification(notifications[notification].msg);
+			}
+
+			function is_member() {
+				return (username.length > 0) ? true : false;
+			}
+
+			function notification_sound() {
+				var audio = new Audio('ping.mp3');
+				audio.src = 'ping.mp3'
+				audio.type = 'audio/mpeg'
+				audio.volume = .7;
+				audio.play();
+			}
+
+			socket.on('connect', function(data) { });
+			socket.on('connect_failed', function(data) { });
+			socket.on('disconnect', function(data) { });
+
+			socket.on('handshake', function(data) {
+				if (is_member()) {
+					$('.wrapper').eq(0).fadeOut(function() {
+						$('.wrapper').eq(1).fadeIn();
+
+						display_members(data.members);
+						display_notifications(data.notifications);
+						display_messages(data.msgs);
+
+						auto_scroll();
+					});
+				}
+			});
+
+			socket.on('message', function(data) {
+				if (is_member())
+					add_message(data.username, data.color, data.msg);
+				auto_scroll();
+			});
+
+			socket.on('notify', function(data) {
+				if (is_member())
+					add_notification(data.msg);
+
+				auto_scroll();
+			});
+
+			socket.on('members', function(data) {
+				display_members(data.members)
+			});
+
+			$(function() {
+				// Iniialisation
+				$('.wrapper').eq(0).fadeIn();
+
+				// Join chat room
+				$('form').eq(0).submit(function() {
+					username = document.forms[0].username.value;
+					if (username.length > 0) {
+						socket.emit('handshake', { username : username });
+						add_notification('You have joined the chat room.');
+					} else
+						alert('Please add a username before joining the chat room.');
+
+					document.forms[0].username.value = '';
+
+					return false;
+				});
+
+				// Send message
+				$('form').eq(1).submit(function() {
+					var message = document.forms[1].message.value;
+					if (message.length > 0) {
+						socket.emit('message', { username : username, msg : message });
+						add_message('You', '#06c', message);
+					} else
+						alert('Please add a message to send.');
+
+					document.forms[1].message.value = '';
+					auto_scroll();
+
+					return false;
+				});
+
+				$(window).bind('beforeunload', function() {
+					if (is_member())
+						socket.emit('bye', { username : username });
+				});
+
+			});
+		</script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<form>
+				<label>Please provide a username to join the chat room</label>
+				<input type="text" name="username" />
+				<input type="submit" value="Join" />
+			</form>
+		</div>
+		<div class="wrapper">
+			<div id="top">
+				<span>Members:</span>
+				<span title=""></span>
+			</div>
+			<div id="messages">
+				<ul></ul>
+			</div>
+			<form id="sender">
+				<input type="text" id="message" name="message" />
+				<input type="submit" value="Send" />
+			</form>
+		</div>
+	</body>
+</html>

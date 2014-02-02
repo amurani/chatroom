@@ -1,0 +1,187 @@
+html {
+	height: 100%;
+	min-width: 200px;
+}
+
+body {
+	background-color: #f2f2f2;
+	font-family: Monaco;
+	font-size: 100%;
+	height: calc(100% - 10px);
+	margin: 5px;
+}
+
+.wrapper {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-bottom: 2px solid #ccc;
+	border-radius: 3px;
+	display: none;
+	margin: 0 auto;
+}
+
+.wrapper:nth-child(2) {
+	height: calc(100% - 3px);
+}
+
+.wrapper * {
+	font-size: 1em;
+}
+
+#top {
+	overflow: auto;
+}
+
+#top span {
+	float: left;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+	overflow: hidden;
+}
+
+#top span:nth-child(1) {
+	color: #099;
+	font-weight: bold;}
+
+#top span:nth-child(2) {
+	color: #888;
+	cursor: default;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#messages {
+	border-bottom: 1px solid #ccc;
+	border-top: 2px solid #ccc;
+	height: calc(100% - 79px);
+	min-height: 200px;
+	overflow: hidden;
+}
+
+#messages ul {
+	list-style: none;
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
+	overflow-y: scroll;
+	padding: 0;
+	width: calc(100% + 21px);
+}
+
+#messages ul li {
+	text-align: center;
+}
+
+#messages ul li div {
+	background-color: #fff;
+	border: 1px solid #f2f2f2;
+	border-bottom: 2px solid #eee;
+	border-radius: 3px;
+	clear: both;
+	font-size: 14px;
+	margin: 5px;
+	width: auto;
+}
+
+#messages ul li .message {
+	overflow: auto;
+}
+
+#messages ul li .message span {
+	float: left;
+	margin: 0 5px;
+}
+
+#messages ul li .message .person {
+	color: #06c;
+	font-weight: bold;
+	padding: 5px;
+}
+
+#messages ul li .message .text {
+	color: #666;
+	padding: 5px 10px;
+}
+
+#messages ul li .notification {
+	background-color: #fcfcfc;
+	margin: 10px auto;
+	width: 75%;
+}
+
+#messages ul li .notification .text {
+	color: #099;
+	font-style: italic;
+}
+
+form {
+	overflow: auto;
+	padding: 5px;
+}
+
+form * {
+	display: block;
+	float: left;
+}
+
+form label {
+	color: #888;
+	font-weight: bold;
+	text-align: center;
+	width: calc(100% - 20px);
+	width: 100%;
+}
+
+form input[type='text'],
+form input[type='submit'] {
+	border-radius: 3px;
+	font-family: Monaco;
+	margin: 0;
+	padding: 5px;
+}
+
+form input[type='text'] {
+	border: 1px solid #ccc;
+	margin-right: 5px;
+	width: calc(80% - 10px);
+}
+
+form input[type='submit'] {
+	background-color: #095	;
+	border: none;
+	border-bottom: 2px solid #099;
+	color: #fff;
+	font-weight: bold;
+	line-height: 24px;
+	width: calc(20% - 10px);
+}
+
+@media only screen and (min-width: 336px) {
+
+	#top span:nth-child(1) {
+		width: calc(30% - 20px);
+	}
+
+	#top span:nth-child(2) {
+		width: calc(70% - 20px);
+	}
+
+}
+
+@media only screen and (min-width: 481px) {
+
+	.wrapper {
+		width: 480px;
+	}
+
+	#top span:nth-child(1) {
+		width: 80px;
+	}
+
+	#top span:nth-child(2) {
+		width: 360px;
+	}
+
+}
