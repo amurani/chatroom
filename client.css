@@ -21,6 +21,7 @@ body {
 }
 
 .wrapper:nth-child(2) {
+	min-height: 279px;
 	height: calc(100% - 3px);
 }
 
@@ -53,6 +54,7 @@ body {
 }
 
 #messages {
+	background-image: url('diagonal_stripes.gif');
 	border-bottom: 1px solid #ccc;
 	border-top: 2px solid #ccc;
 	height: calc(100% - 79px);
@@ -61,6 +63,7 @@ body {
 }
 
 #messages ul {
+	background-color: rgba(255, 255, 255, 0.6);
 	list-style: none;
 	height: 100%;
 	margin: 0;
@@ -92,6 +95,7 @@ body {
 #messages ul li .message span {
 	float: left;
 	margin: 0 5px;
+	text-align: left;
 }
 
 #messages ul li .message .person {

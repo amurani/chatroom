@@ -10,9 +10,7 @@ var notifications = [];
 
 function serve(response, fileName, mimeType) {
 	fs.readFile(fileName, function(error, content) {
-
 		if (error) console.log(error);
-		console.log(mimeType);
 		response.writeHead(200, { 'Content-Length' : content.length, 'Content-Type' : mimeType });
 		response.write(content);
 		response.end();
@@ -34,6 +32,8 @@ function handler (req, res) {
   		serve(res, '_socket.io.js', 'text/javascript');
   	else if (action.indexOf('/ping.mp3') == 0)
   		serve(res, 'ping.mp3', 'audio/mpeg');
+  	else if (action.indexOf('/diagonal_stripes.gif') == 0)
+  		serve(res, 'diagonal_stripes.gif', 'image/gif');
 	else
 		serve(res, 'client.html', 'text/html');
 }
@@ -76,6 +76,7 @@ io.sockets.on('connection', function (socket) {
 		var notification = { msg : data.username + ' has left the chat room.' };
 		notifications.push(notification);
 		socket.broadcast.emit('notify', notification);
+		socket.broadcast.emit('members', { members : members });
 	});
 
 });
